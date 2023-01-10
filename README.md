@@ -1,4 +1,4 @@
-# Password Generator by Kulsgam
+# Cryptographically Secure Password Generator by Kulsgam
 ![alt text](Image.png)
 &nbsp;
 #### **Description:** A GUI based secure password generator with multiple options, which allow the customization of the password to be generated. Made purely with C and WIN32 API(no MFC). BCrypt by windows is used to generated the randomness.
