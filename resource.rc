@@ -1,0 +1,4 @@
+#include "winuser.h"
+#include "resource.h"
+MYICON ICON "Icon.ico"
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "Password Generator.exe.manifest"
