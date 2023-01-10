@@ -22,13 +22,10 @@ ATOM MyRegisterClass(HINSTANCE hInst, char *name, UINT styles, HBRUSH bkg_brush,
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
     wc.hInstance = hInst;
-    // wc.hIcon = LoadImageA(NULL, ICON, IMAGE_ICON, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE | LR_SHARED);
     wc.hIcon = LoadIconA(hInst, MAKEINTRESOURCE(MYICON));
     wc.hCursor = LoadCursorA(NULL, IDC_ARROW);
     wc.hbrBackground = bkg_brush;
     wc.lpszMenuName = NULL;
-    // wc.hIcon = LoadImageA(NULL, "Icon.ico", IMAGE_ICON, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE | LR_SHARED);
-    // wc.hIconSm = LoadIcon(NULL, IDI_QUESTION);
     wc.hIconSm = LoadIconA(hInst, IDI_APPLICATION);
     wc.lpszClassName = name;
 
@@ -282,21 +279,30 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
         }
         case WM_CTLCOLORSTATIC: {
             /* Without this, the windows 11 rounding happens incorrectly which causes white corners */
-            RECT checkbox_rect;
             HWND cb_hwnd = (HWND)lp;
+            int control_identifier = GetDlgCtrlID(cb_hwnd);
+            RECT checkbox_rect;
             HDC hdc = GetDC(hwnd);
             GetClientRect(cb_hwnd, &checkbox_rect);
             MapWindowPoints(cb_hwnd, hwnd, (LPPOINT)&checkbox_rect, 2);
-            COLORREF topleft_colour = GetPixel(hdc, checkbox_rect.left, checkbox_rect.top);
-            COLORREF topright_colour = GetPixel(hdc, checkbox_rect.right, checkbox_rect.top);
-            COLORREF bottomleft_colour = GetPixel(hdc, checkbox_rect.left, checkbox_rect.bottom);
-            COLORREF bottomright_colour = GetPixel(hdc, checkbox_rect.right, checkbox_rect.bottom);
+            if (!afterCreation) { // Do this only if, it's the initial creation of the controls
+                topleft_colour[control_identifier - SHOW_PSWD_CB] = GetPixel(hdc, checkbox_rect.left, checkbox_rect.top);
+                topright_colour[control_identifier - SHOW_PSWD_CB] = GetPixel(hdc, checkbox_rect.right, checkbox_rect.top);
+                bottomleft_colour[control_identifier - SHOW_PSWD_CB] = GetPixel(hdc, checkbox_rect.left, checkbox_rect.bottom);
+                bottomright_colour[control_identifier - SHOW_PSWD_CB] = GetPixel(hdc, checkbox_rect.right, checkbox_rect.bottom);
+            } // The reason this is needed is because it is efficient and this prevents the controls from losing colour when out of monitor bounds
             // SetBkColor((HDC)wp, topleft_colour); // Don't know why this is needed, but it was there in the documentation ¯\_(ツ)_/¯
             DeleteObject(hCB_brush_colour);// Make sure old brushes are freed(deleted)
-            hCB_brush_colour = CreateGradientBrush4(topleft_colour, topright_colour, bottomright_colour, bottomleft_colour,
-            checkbox_rect.bottom - checkbox_rect.top, checkbox_rect.right - checkbox_rect.left, hdc);
+            hCB_brush_colour = CreateGradientBrush4(topleft_colour[control_identifier - SHOW_PSWD_CB],
+                                                    topright_colour[control_identifier - SHOW_PSWD_CB],
+                                                    bottomright_colour[control_identifier - SHOW_PSWD_CB],
+                                                    bottomleft_colour[control_identifier - SHOW_PSWD_CB],
+                                                    checkbox_rect.bottom - checkbox_rect.top,
+                                                    checkbox_rect.right - checkbox_rect.left,
+                                                    hdc);
             DeleteDC(hdc);
             return (LRESULT)hCB_brush_colour;
+
         }
 
         case WM_CREATE: {
@@ -448,7 +454,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
             if (!isproportionate_CB)
                 handleError("Proportionate password checkbox creation failed");
             SendMessage(isproportionate_CB, WM_SETFONT, (WPARAM)font, (LPARAM)MAKELONG(TRUE, 0)); // To set font
-
             break;
         }
         case WM_CLOSE: {
@@ -516,10 +521,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     ShowWindow(hwnd, nCmdShow);
     UpdateWindow(hwnd);
 
+    afterCreation = TRUE; // After the initial creation of the controls
+
     while (GetMessageA(&msg, NULL, 0, 0) > 0) {
         TranslateMessage(&msg);
         DispatchMessageA(&msg);
     }
+
     return msg.wParam;
 }
 

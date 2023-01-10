@@ -67,8 +67,8 @@
 #define NUM_CB 103
 #define SPECIAL_CB 104
 #define LETTER_CB 105
-#define RND_PSWD_BTN 106
-#define CASE_OPTIONS_DD 107
-#define CPY_BTN 108
-#define GEN_BTN 109
-#define PROPORTIONATE_CB 110
+#define PROPORTIONATE_CB 106
+#define RND_PSWD_BTN 107
+#define CASE_OPTIONS_DD 108
+#define CPY_BTN 109
+#define GEN_BTN 110

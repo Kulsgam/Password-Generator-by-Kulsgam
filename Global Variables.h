@@ -4,6 +4,12 @@
 #include <windows.h>
 #endif
 
+WINBOOL afterCreation = FALSE; // Needed to track the initial creation of the controls(check WM_CTLCOLORSTATIC for more details)
+COLORREF topleft_colour[PROPORTIONATE_CB - SHOW_PSWD_CB + 1];
+COLORREF topright_colour[PROPORTIONATE_CB - SHOW_PSWD_CB + 1];
+COLORREF bottomleft_colour[PROPORTIONATE_CB - SHOW_PSWD_CB + 1];
+COLORREF bottomright_colour[PROPORTIONATE_CB - SHOW_PSWD_CB + 1];
+
 HWND hwnd = NULL;
 
 HWND casing_options = NULL;
