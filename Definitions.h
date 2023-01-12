@@ -72,3 +72,6 @@
 #define CASE_OPTIONS_DD 108
 #define CPY_BTN 109
 #define GEN_BTN 110
+
+/* Array sizes */
+#define COLOUR_ARRAY_SIZE PROPORTIONATE_CB - SHOW_PSWD_CB + 1

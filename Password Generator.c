@@ -285,18 +285,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
             HDC hdc = GetDC(hwnd);
             GetClientRect(cb_hwnd, &checkbox_rect);
             MapWindowPoints(cb_hwnd, hwnd, (LPPOINT)&checkbox_rect, 2);
+            int idx = control_identifier - SHOW_PSWD_CB;
+            if (idx > COLOUR_ARRAY_SIZE - 1)
+                break;
             if (!afterCreation) { // Do this only if, it's the initial creation of the controls
-                topleft_colour[control_identifier - SHOW_PSWD_CB] = GetPixel(hdc, checkbox_rect.left, checkbox_rect.top);
-                topright_colour[control_identifier - SHOW_PSWD_CB] = GetPixel(hdc, checkbox_rect.right, checkbox_rect.top);
-                bottomleft_colour[control_identifier - SHOW_PSWD_CB] = GetPixel(hdc, checkbox_rect.left, checkbox_rect.bottom);
-                bottomright_colour[control_identifier - SHOW_PSWD_CB] = GetPixel(hdc, checkbox_rect.right, checkbox_rect.bottom);
+                topleft_colour[idx] = GetPixel(hdc, checkbox_rect.left, checkbox_rect.top);
+                topright_colour[idx] = GetPixel(hdc, checkbox_rect.right, checkbox_rect.top);
+                bottomleft_colour[idx] = GetPixel(hdc, checkbox_rect.left, checkbox_rect.bottom);
+                bottomright_colour[idx] = GetPixel(hdc, checkbox_rect.right, checkbox_rect.bottom);
             } // The reason this is needed is because it is efficient and this prevents the controls from losing colour when out of monitor bounds
-            // SetBkColor((HDC)wp, topleft_colour); // Don't know why this is needed, but it was there in the documentation ¯\_(ツ)_/¯
+            // SetBkColor((HDC)wp, topleft_colour[0]); // Don't know why this is needed, but it was there in the documentation ¯\_(ツ)_/¯
             DeleteObject(hCB_brush_colour);// Make sure old brushes are freed(deleted)
-            hCB_brush_colour = CreateGradientBrush4(topleft_colour[control_identifier - SHOW_PSWD_CB],
-                                                    topright_colour[control_identifier - SHOW_PSWD_CB],
-                                                    bottomright_colour[control_identifier - SHOW_PSWD_CB],
-                                                    bottomleft_colour[control_identifier - SHOW_PSWD_CB],
+            hCB_brush_colour = CreateGradientBrush4(topleft_colour[idx],
+                                                    topright_colour[idx],
+                                                    bottomright_colour[idx],
+                                                    bottomleft_colour[idx],
                                                     checkbox_rect.bottom - checkbox_rect.top,
                                                     checkbox_rect.right - checkbox_rect.left,
                                                     hdc);

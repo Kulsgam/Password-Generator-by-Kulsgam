@@ -5,10 +5,10 @@
 #endif
 
 WINBOOL afterCreation = FALSE; // Needed to track the initial creation of the controls(check WM_CTLCOLORSTATIC for more details)
-COLORREF topleft_colour[PROPORTIONATE_CB - SHOW_PSWD_CB + 1];
-COLORREF topright_colour[PROPORTIONATE_CB - SHOW_PSWD_CB + 1];
-COLORREF bottomleft_colour[PROPORTIONATE_CB - SHOW_PSWD_CB + 1];
-COLORREF bottomright_colour[PROPORTIONATE_CB - SHOW_PSWD_CB + 1];
+COLORREF topleft_colour[COLOUR_ARRAY_SIZE];
+COLORREF topright_colour[COLOUR_ARRAY_SIZE];
+COLORREF bottomleft_colour[COLOUR_ARRAY_SIZE];
+COLORREF bottomright_colour[COLOUR_ARRAY_SIZE];
 
 HWND hwnd = NULL;
 
