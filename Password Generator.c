@@ -490,8 +490,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 {
     MSG msg;
     {
-        if (!SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2)) // Sets the DPI awareness so the window won't malfunction in high DPI screens
-            OutputDebugStringA("WARNING: could not set DPI awareness");
 
         /* Creating a better font than the default font */
         font = CreateFontW(22, 10, 0, 0, FW_BOLD, FALSE, FALSE, FALSE, -1 /*ignore*/, OUT_DEFAULT_PRECIS,
