@@ -4,7 +4,7 @@
 #include <windows.h>
 #endif
 
-WINBOOL afterCreation = FALSE; // Needed to track the initial creation of the controls(check WM_CTLCOLORSTATIC for more details)
+WINBOOL after_creation[COLOUR_ARRAY_SIZE] = { FALSE }; // Needed to track the initial creation of the controls(check WM_CTLCOLORSTATIC for more details)
 COLORREF topleft_colour[COLOUR_ARRAY_SIZE];
 COLORREF topright_colour[COLOUR_ARRAY_SIZE];
 COLORREF bottomleft_colour[COLOUR_ARRAY_SIZE];

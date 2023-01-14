@@ -281,6 +281,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
             /* Without this, the windows 11 rounding happens incorrectly which causes white corners */
             HWND cb_hwnd = (HWND)lp;
             int control_identifier = GetDlgCtrlID(cb_hwnd);
+            if(!control_identifier){
+                break;
+            }
             RECT checkbox_rect;
             HDC hdc = GetDC(hwnd);
             GetClientRect(cb_hwnd, &checkbox_rect);
@@ -288,11 +291,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
             int idx = control_identifier - SHOW_PSWD_CB;
             if (idx > COLOUR_ARRAY_SIZE - 1)
                 break;
-            if (!afterCreation) { // Do this only if, it's the initial creation of the controls
+            if (!after_creation[idx]) { // Do this only if, it's the initial creation of the controls
                 topleft_colour[idx] = GetPixel(hdc, checkbox_rect.left, checkbox_rect.top);
                 topright_colour[idx] = GetPixel(hdc, checkbox_rect.right, checkbox_rect.top);
                 bottomleft_colour[idx] = GetPixel(hdc, checkbox_rect.left, checkbox_rect.bottom);
                 bottomright_colour[idx] = GetPixel(hdc, checkbox_rect.right, checkbox_rect.bottom);
+                after_creation[idx] = TRUE; // initial creation is done
             } // The reason this is needed is because it is efficient and this prevents the controls from losing colour when out of monitor bounds
             // SetBkColor((HDC)wp, topleft_colour[0]); // Don't know why this is needed, but it was there in the documentation ¯\_(ツ)_/¯
             DeleteObject(hCB_brush_colour);// Make sure old brushes are freed(deleted)
@@ -521,8 +525,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
     ShowWindow(hwnd, nCmdShow);
     UpdateWindow(hwnd);
-
-    afterCreation = TRUE; // After the initial creation of the controls
 
     while (GetMessageA(&msg, NULL, 0, 0) > 0) {
         TranslateMessage(&msg);
