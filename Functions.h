@@ -214,12 +214,19 @@ DWORD64 genRandomNum(DWORD64 min, DWORD64 max) {
 }
 
 /* Generates a random special character(eg:- /&%#*) */
-char genSpecChar() {
+char genSpecChar(int is_sp_allowed) {
     // 32 to 47 && 58 to 64 && 91 to 96 && 123 to 126
     char ch;
-    do {
-        ch = genRandomNum(32, 126);
-    } while (((ch > 47 && ch < 58) || (ch > 64 && ch < 91) || (ch > 96 && ch < 123)));
+    if (is_sp_allowed) {
+        do {
+            ch = genRandomNum(32, 126);
+        } while (((ch > 47 && ch < 58) || (ch > 64 && ch < 91) || (ch > 96 && ch < 123)));
+    }
+    else {
+        do {
+            ch = genRandomNum(33, 126);
+        } while (((ch > 47 && ch < 58) || (ch > 64 && ch < 91) || (ch > 96 && ch < 123)));
+    }
     /* Ascii values for the non-special character */
 
     return ch;
@@ -236,7 +243,14 @@ char genLetter() {
     return ch;
 }
 
-void generatePswd(char *buffer, int buffer_sz, int is_num, int is_special, int is_letter, int is_proportionate, int casing_option) {
+void checkSp(char *buffer, int buffer_sz) {
+    if (buffer[buffer_sz - 2] == ' ') {
+        char ch = genSpecChar(0);
+        buffer[buffer_sz - 2] = ch;
+    }
+}
+
+void generatePswd(char *buffer, int buffer_sz, int is_num, int is_special, int is_letter, int is_proportionate, int is_sp_allowed, int casing_option) {
     int u_letter_n = 0, l_letter_n = 0, spec_char_n = 0, digit_n = 0; // ints to keep track of the number of character types
 
     /* Buffers to store the index in password buffer, of the character types */
@@ -259,7 +273,7 @@ void generatePswd(char *buffer, int buffer_sz, int is_num, int is_special, int i
                 RECORDINDEX(digit)
             }
             else if (is_special && selector == 1) { // For special characters
-                ch = genSpecChar();
+                ch = genSpecChar(is_sp_allowed);
                 RECORDINDEX(spec_char)
             }
             else if (!is_letter) { // if selector is 2 and !is_letter
@@ -300,7 +314,7 @@ void generatePswd(char *buffer, int buffer_sz, int is_num, int is_special, int i
             DOCHECK(genRandomNum(48, 57))
         }
         if (is_special && !spec_char_n) {
-            DOCHECK(genSpecChar())
+            DOCHECK(genSpecChar(is_sp_allowed))
         }
         if (!is_letter)
             return;
@@ -310,6 +324,7 @@ void generatePswd(char *buffer, int buffer_sz, int is_num, int is_special, int i
         if ((!casing_option || casing_option == 2) && !l_letter_n) {
             DOCHECK(genRandomNum(97, 122))
         }
+        checkSp(buffer, buffer_sz);
         return;
     }
 
@@ -318,7 +333,7 @@ void generatePswd(char *buffer, int buffer_sz, int is_num, int is_special, int i
     for (int i = 0; i < buffer_sz - 1;buffer[i] = '\0', i++); // Zero-memorying the buffer
     int n_of_instances = (buffer_sz - 1) / 4; // Gets approximate number of characters for each character type
     /*
-    How the proportionate algorithm work:
+    How the proportionate algorithm works:
     (1) Select a number which is about the buffer size
     (2) Cycle through the password array that number of time, but ignoring the cases where char != '\0'
     (3) Replace that index which the cycling lands on with a random character(of respective character type)
@@ -331,7 +346,7 @@ void generatePswd(char *buffer, int buffer_sz, int is_num, int is_special, int i
     }
     else if (is_special) {
         for (int i = 0; i < n_of_instances; i++) { // for special characters
-            DOPROPORTIONATE(genSpecChar())
+            DOPROPORTIONATE(genSpecChar(is_sp_allowed))
         }
     }
     else if (is_letter && !casing_option) {
@@ -359,7 +374,7 @@ void generatePswd(char *buffer, int buffer_sz, int is_num, int is_special, int i
             ch = genRandomNum(48, 57);
         }
         else if (is_special && selector == 1) { // For special characters
-            ch = genSpecChar();
+            ch = genSpecChar(is_sp_allowed);
         }
         else if (!is_letter) { // if selector is 2 and !is_letter
             i--;
@@ -376,4 +391,5 @@ void generatePswd(char *buffer, int buffer_sz, int is_num, int is_special, int i
         }
         buffer[i] = ch;
     }
+    checkSp(buffer, buffer_sz);
 }

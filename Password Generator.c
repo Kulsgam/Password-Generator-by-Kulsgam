@@ -252,9 +252,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
                             if (!(is_letter || is_num || is_special)) // no password will be generated if all needed checkboxes are unchecked
                                 break;
                             int is_proportionate = IsDlgButtonChecked(hwnd, PROPORTIONATE_CB);
+                            int is_sp_allowed = IsDlgButtonChecked(hwnd, SP_CB);
                             int casing_option = SendMessage((HWND)casing_options, (UINT)CB_GETCURSEL, (WPARAM)0, (LPARAM)0);
                             // (HWND)lp fails for some reason hence I used casing_options HWND directly
-                            generatePswd(pswd, n + 1, is_num, is_special, is_letter, is_proportionate, casing_option);
+                            generatePswd(pswd, n + 1, is_num, is_special, is_letter, is_proportionate, is_sp_allowed, casing_option);
                             SetWindowText(pswd_text_field, pswd);
                             SendMessage(copy_btn, WM_SETTEXT, (WPARAM)font, (LPARAM)"Copy");
                             break;
@@ -281,7 +282,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
             /* Without this, the windows 11 rounding happens incorrectly which causes white corners */
             HWND cb_hwnd = (HWND)lp;
             int control_identifier = GetDlgCtrlID(cb_hwnd);
-            if(!control_identifier){
+            if (!control_identifier) {
                 break;
             }
             RECT checkbox_rect;
@@ -453,6 +454,15 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
             SendMessage(letter_checkbox, WM_SETFONT, (WPARAM)font, (LPARAM)MAKELONG(TRUE, 0)); // To set font
             CheckDlgButton(hwnd, LETTER_CB, BST_CHECKED); // Changes checkbox state to checked when starting window
 
+            /* Checkbox to allow spaces in password */
+            HWND sp_checkbox = CreateWindowW(L"BUTTON", L"Allow spaces", WS_VISIBLE | WS_CHILD | BS_AUTOCHECKBOX, xpos_allow_sp, ypos_allow_sp,
+                          cx_check_box + sp_cb_x_font_padding,
+                          cy_check_box + cb_yfont_padding,
+                          hwnd, (HMENU)SP_CB, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+            if (!sp_checkbox)
+                handleError("Allow letters checkbox creation failed");
+            SendMessage(sp_checkbox, WM_SETFONT, (WPARAM)font, (LPARAM)MAKELONG(TRUE, 0)); // To set font
+
             /* Checkbox to specify whether to use the proportionate password generating algorithm */
             HWND isproportionate_CB = CreateWindowW(L"BUTTON", L"Proportionate password", WS_VISIBLE | WS_CHILD | BS_AUTOCHECKBOX, xpos_isproportionate_CB, ypos_isproportionate_CB,
                                       cx_check_box + isproportionate_cb_xfont_padding,
@@ -533,8 +543,3 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     return msg.wParam;
 }
-
-/* TODO:
-(6) Make sure to link with Visual styles >:)
-(19) Add icons
-*/

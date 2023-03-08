@@ -6,7 +6,7 @@
 #define w_name "Password Generator v1.0"
 #define w_title "Password Generator by Kulsgam v1.0"
 #define w_width 600
-#define w_height 275
+#define w_height 290
 
 /* Positions */
 #define xpos_pswd_text 5
@@ -20,7 +20,7 @@
 #define xpos_pswd_limit_numeric_field 360 - pswd_limit_numeric_field_width
 #define ypos_pswd_limit_numeric_field 112
 #define xpos_casing_options 5
-#define ypos_casing_options 90 + 1 + 6 * (cy_check_box + cb_yfont_padding)
+#define ypos_casing_options 90 + 1 + 7 * (cy_check_box + cb_yfont_padding)
 #define xpos_showpswd_checkbox 5
 #define ypos_showpswd_checkbox 90
 #define xpos_show_pswd_limit_CB 5
@@ -31,8 +31,10 @@
 #define ypos_num_CB 90 + 3 * (cy_check_box + cb_yfont_padding)
 #define xpos_special_CB 5
 #define ypos_special_CB 90 + 4 * (cy_check_box + cb_yfont_padding)
+#define xpos_allow_sp 5
+#define ypos_allow_sp 90 + 5 * (cy_check_box + cb_yfont_padding)
 #define xpos_letter_CB 5
-#define ypos_letter_CB 90 + 5 * (cy_check_box + cb_yfont_padding)
+#define ypos_letter_CB 90 + 6 * (cy_check_box + cb_yfont_padding)
 
 /* Control sizes */
 #define pswd_text_width 480
@@ -59,6 +61,7 @@
 #define num_cb_xfont_padding 140
 #define special_cb_xfont_padding 250
 #define letter_cb_xfont_padding 140
+#define sp_cb_x_font_padding 130
 #define isproportionate_cb_xfont_padding 240
 
 /* Control identifiers */
@@ -67,11 +70,13 @@
 #define NUM_CB 103
 #define SPECIAL_CB 104
 #define LETTER_CB 105
-#define PROPORTIONATE_CB 106
-#define RND_PSWD_BTN 107
+#define SP_CB 106
+#define PROPORTIONATE_CB 107
+
 #define CASE_OPTIONS_DD 108
-#define CPY_BTN 109
-#define GEN_BTN 110
+#define RND_PSWD_BTN 109
+#define CPY_BTN 110
+#define GEN_BTN 111
 
 /* Array sizes */
 #define COLOUR_ARRAY_SIZE PROPORTIONATE_CB - SHOW_PSWD_CB + 1
