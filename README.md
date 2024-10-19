@@ -1,5 +1,5 @@
 # Cryptographically Secure Password Generator by Kulsgam
-Click the image below to watch it
+Click the image below to watch the video
 
 [![Watch the video](Image.png)](https://youtu.be/i7HwYwaZGCc)
 &nbsp;
